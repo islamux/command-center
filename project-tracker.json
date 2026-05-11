@@ -1,0 +1,26 @@
+{
+  "project": {
+    "name": "My Project",
+    "start_date": "",
+    "target_date": "",
+    "current_week": 1,
+    "schedule_status": "on_track",
+    "overall_progress": 0
+  },
+  "dashboard": {
+    "current_focus": "",
+    "active_milestone": "",
+    "next_priority": "",
+    "blockers": "None",
+    "health": "Starting"
+  },
+  "milestones": {
+    "active": [],
+    "backlog": [],
+    "completed": []
+  },
+  "agents": [],
+  "agent_log": [],
+  "history_log": [],
+  "_schema_version": 1
+}
