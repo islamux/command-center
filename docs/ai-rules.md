@@ -41,7 +41,7 @@ Before writing any code, stop and think.
 Before touching any file, understand the full picture.
 
 ### 2.1 Read PROJECT_MAP.md
-- Read `PROJECT_MAP.md` in full.
+- Read `PROJECT_MAP.md` in full if it exists (this is an optional file — skip if not present).
 - Identify all files that need to change and their dependencies.
 - Check `[SYSTEM_FLOW]` and `[ARCHITECTURE]` for integration points.
 
@@ -121,6 +121,7 @@ Prove it works.
 Update the documentation to reflect reality.
 
 ### 5.1 Update PROJECT_MAP.md
+- If `PROJECT_MAP.md` does not exist, skip this step (it is optional).
 - **Add** unfinished or partially connected features to `[ORPHANS & PENDING]`.
 - **Remove** items from `[ORPHANS & PENDING]` that are now fully completed.
 - Update `[ARCHITECTURE]` if files were added, removed, or moved.
@@ -152,7 +153,8 @@ Update the documentation to reflect reality.
 
 | File | Purpose | Maintained By |
 |------|---------|---------------|
-| `PROJECT_MAP.md` | External memory — tech stack, system flow, architecture, orphans | Orchestrator |
+| `PROJECT_MAP.md` | External memory — tech stack, system flow, architecture, orphans (optional) | Orchestrator |
 | `project-tracker.json` | Data store — milestones, tasks, agents, history | CLI / MCP tools |
+| `project-tracker.example.json` | Template data store for new projects | Human |
 | `AGENTS.md` | Runbook — who does what, how to work | Human |
 | This file | Universal AI protocols (you are here) | Human |
