@@ -20,7 +20,8 @@ pnpm install
 pnpm build
 
 # Initialize your project
-nano project-tracker.json   # Edit with your project name + milestones
+cp project-tracker.example.json project-tracker.json   # Copy the template
+nano project-tracker.json                              # Edit with your project name + milestones
 
 # Launch TUI dashboard
 pnpm ccui
@@ -44,9 +45,10 @@ To use with AI agents:
 ## Project Structure
 
 ```
-├── AGENTS.md                ← Agent runbook
-├── project-tracker.json     ← Data store (edit this!)
-├── package.json             ← Workspace root + CLI scripts
+├── AGENTS.md                    ← Agent runbook
+├── project-tracker.example.json ← Template data store
+├── project-tracker.json         ← Your project data (gitignored)
+├── package.json                 ← Workspace root + CLI scripts
 ├── pnpm-workspace.yaml
 ├── docs/
 │   ├── ai-rules.md          ← Universal AI protocols

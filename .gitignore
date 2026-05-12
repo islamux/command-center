@@ -8,3 +8,4 @@ dist/
 .env
 temp/
 tmp/
+project-tracker.json
