@@ -68,7 +68,6 @@ export function approveTask(taskId: string, feedback?: string): ServiceResult {
   const now = new Date().toISOString()
 
   subtask.status = 'done'
-  subtask.status = 'done'
   subtask.completed_at = now
   subtask.completed_by = agentId
 
@@ -133,7 +132,6 @@ export function resetTask(taskId: string): ServiceResult {
   const { subtask } = found
   const agentId = 'orchestrator'
 
-  subtask.status = 'todo'
   subtask.status = 'todo'
   subtask.assignee = null
   subtask.completed_at = null
