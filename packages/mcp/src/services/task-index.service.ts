@@ -1,4 +1,4 @@
-import type { TrackerState, Subtask, Milestone, FoundTask } from 'command-center-shared'
+import type { TrackerState, FoundTask } from 'command-center-shared'
 
 export interface TaskIndexEntry {
   milestoneId: string

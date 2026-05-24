@@ -110,11 +110,12 @@ See [docs/cc-commands.md](docs/cc-commands.md) for full reference.
 
 ## Standard Operating Procedure (SOP)
 
-1. **Build:** Run `pnpm install && pnpm build` at start of session.
-2. **Check the Tracker:** Verify `project-tracker.json` or run `pnpm cc:status`.
-3. **Follow ai-rules.md:** Execute the task through all 5 phases sequentially.
-4. **Log Progress:** After each action, append to `history_log` in the tracker.
-5. **Sync State:** Update `PROJECT_MAP.md` if project structure or flow changed (skip if not present).
+1. **Branch:** When implementing any plan, create a new branch named `improve/<milestone-id>` (e.g., `improve/m1-foundation-hygiene`). Work on the branch, commit as you go, and merge back when the milestone is complete.
+2. **Build:** Run `pnpm install && pnpm build` at start of session.
+3. **Check the Tracker:** Verify `project-tracker.json` or run `pnpm cc:status`.
+4. **Follow ai-rules.md:** Execute the task through all 5 phases sequentially.
+5. **Log Progress:** After each action, append to `history_log` in the tracker.
+6. **Sync State:** Update `PROJECT_MAP.md` if project structure or flow changed (skip if not present).
 
 ---
 

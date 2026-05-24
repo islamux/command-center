@@ -1,22 +1,15 @@
 import { readRaw, writeAtomic, withLock } from '../storage/tracker-file.js'
 import { createBackup } from '../storage/backup.js'
-import { TrackerStateSchema } from '../schema.js'
+import { TrackerStateSchema, allMilestones } from 'command-center-shared'
 import { runMigrations } from './migration.service.js'
 import { rotateAgentLog } from '../storage/log-rotation.js'
-import type { TrackerState, Subtask, Milestone, AgentLogEntry, HistoryLogEntry, FoundTask, ServiceResult, CompletedMilestone } from 'command-center-shared'
+import type { TrackerState, Subtask, Milestone, Agent, AgentLogEntry, HistoryLogEntry, FoundTask, ServiceResult } from 'command-center-shared'
 
 export function readTracker(): TrackerState {
   const raw = readRaw()
   const parsed = JSON.parse(raw)
   const state = TrackerStateSchema.parse(parsed) as TrackerState
   return runMigrations(state)
-}
-
-export function allMilestones(state: TrackerState): Milestone[] {
-  return [
-    ...state.milestones.active,
-    ...state.milestones.backlog,
-  ].map((m: Milestone) => ({ ...m, subtasks: m.subtasks || [] }))
 }
 
 export function writeTracker(state: TrackerState, operation = 'write'): void {
@@ -67,7 +60,7 @@ export function getActiveMilestoneById(state: TrackerState, milestoneId: string)
 
 export function touchAgent(state: TrackerState, agentId = 'orchestrator'): void {
   if (!state.agents) state.agents = []
-  const agent = state.agents.find((a: import('../types.js').Agent) => a.id === agentId)
+  const agent = state.agents.find((a: Agent) => a.id === agentId)
   if (agent) {
     agent.last_action_at = new Date().toISOString()
     agent.session_action_count = (agent.session_action_count || 0) + 1

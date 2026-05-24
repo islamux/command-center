@@ -1,5 +1,5 @@
-import type { TrackerState, Agent, Subtask, SubtaskStatus, ServiceResult } from 'command-center-shared'
-import { readTracker, writeTracker, touchAgent, pushLog, ok, fail } from './tracker.service.js'
+import type { TrackerState, Agent, Subtask, ServiceResult } from 'command-center-shared'
+import { fail } from './tracker.service.js'
 
 export type AgentPermission = 'READ' | 'WRITE' | 'EXECUTE' | 'DISPATCH' | 'APPROVE' | 'ADMIN'
 export type AgentStatus = 'active' | 'idle' | 'busy' | 'stalled' | 'offline'

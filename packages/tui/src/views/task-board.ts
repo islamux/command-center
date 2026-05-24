@@ -1,6 +1,6 @@
 import blessed from 'blessed'
 import type { Widgets } from 'blessed'
-import type { TrackerState, Milestone } from '../types.js'
+import type { TrackerState } from '../types.js'
 import { statusColor, statusIcon } from '../theme.js'
 
 const COLUMNS = [

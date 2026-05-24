@@ -1,16 +1,16 @@
-import { readTracker, writeTracker, touchAgent, pushLog, ok, fail } from './tracker.service.js'
-import type { ServiceResult } from 'command-center-shared'
+import { readTracker, writeTracker, touchAgent, pushLog, ok } from './tracker.service.js'
+import type { ServiceResult, Agent } from 'command-center-shared'
 
 export function registerAgent(
   agentId: string,
   name: string,
   type: string,
   permissions: string[],
-  options: { color?: string; parent_id?: string } = {},
+  options: Record<string, any> = {},
 ): ServiceResult {
   const state = readTracker()
   if (!state.agents) state.agents = []
-  const existing = state.agents.find((a: import('../types.js').Agent) => a.id === agentId)
+  const existing = state.agents.find((a: Agent) => a.id === agentId)
 
   if (existing) {
     existing.name = name

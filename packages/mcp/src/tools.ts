@@ -1,4 +1,5 @@
-import { readTracker, findTask, getMilestoneById, allMilestones } from './services/tracker.service.js'
+import { readTracker, findTask, getMilestoneById } from './services/tracker.service.js'
+import { allMilestones } from 'command-center-shared'
 import {
   startTask, completeTask, approveTask, rejectTask,
   resetTask, blockTask, unblockTask, updateTask,
@@ -10,7 +11,7 @@ import {
   moveMilestoneToCompleted,
 } from './services/milestone.service.js'
 import { registerAgent } from './services/agent.service.js'
-import type { Agent, AgentLogEntry, Milestone, Subtask } from './types.js'
+import type { AgentLogEntry, Milestone, Subtask } from './types.js'
 import {
   buildTaskContext, buildTaskSummary, buildProjectStatus,
   buildMilestoneOverview,

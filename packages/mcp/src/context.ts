@@ -1,4 +1,4 @@
-import type { TrackerState, Subtask, Milestone, AgentLogEntry } from './types.js'
+import type { TrackerState, Subtask, Milestone, AgentLogEntry } from 'command-center-shared'
 
 const statusIcon = (status: string): string => {
   switch (status) {
@@ -227,7 +227,7 @@ export function buildProjectStatus(state: TrackerState): string {
   return lines.join('\n')
 }
 
-export function buildMilestoneOverview(milestone: Milestone, state: TrackerState): string {
+export function buildMilestoneOverview(milestone: Milestone, _state: TrackerState): string {
   const lines: string[] = []
   lines.push(`# Milestone: ${milestone.title}`)
   lines.push('')

@@ -3,7 +3,7 @@ import type { Widgets } from 'blessed'
 
 const TABS = ['Swim Lane', 'Task Board', 'Agent Hub', 'Calendar']
 
-export function createTabBar(screen: Widgets.Screen, activeTab: number, onTab: (i: number) => void): Widgets.BoxElement {
+export function createTabBar(screen: Widgets.Screen, activeTab: number, _onTab: (i: number) => void): Widgets.BoxElement {
   const bar = blessed.box({
     parent: screen,
     top: 0,

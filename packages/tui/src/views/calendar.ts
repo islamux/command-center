@@ -1,6 +1,6 @@
 import blessed from 'blessed'
 import type { Widgets } from 'blessed'
-import type { TrackerState, HistoryLogEntry } from '../types.js'
+import type { TrackerState } from '../types.js'
 
 export function createCalendar(screen: Widgets.Screen, state: TrackerState | null): Widgets.BoxElement {
   const box = blessed.box({

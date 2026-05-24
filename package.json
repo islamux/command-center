@@ -27,6 +27,16 @@
     "cc:task": "pnpm _cc get_task_context",
     "cc:register-agent": "pnpm _cc register_agent",
     "cc:activate": "pnpm _cc activate_milestone",
-    "cc:complete-milestone": "pnpm _cc complete_milestone"
+    "cc:complete-milestone": "pnpm _cc complete_milestone",
+    "lint": "eslint packages/ --ext .ts",
+    "format": "prettier --write packages/"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.3",
+    "typescript-eslint": "^8.59.4"
   }
 }

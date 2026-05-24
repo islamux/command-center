@@ -1,7 +1,6 @@
 import blessed from 'blessed'
 import type { Widgets } from 'blessed'
-import type { TrackerState, Milestone } from '../types.js'
-import { statusIcon } from '../theme.js'
+import type { TrackerState } from '../types.js'
 
 export function createSwimLane(screen: Widgets.Screen, state: TrackerState | null, milestoneIdx: number): Widgets.BoxElement {
   const box = blessed.box({
@@ -26,7 +25,6 @@ export function createSwimLane(screen: Widgets.Screen, state: TrackerState | nul
       return
     }
 
-    const all = [...s.milestones.active, ...s.milestones.backlog]
     const completed = s.milestones.completed
     const lines: string[] = []
 

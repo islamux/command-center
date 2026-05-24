@@ -9,8 +9,7 @@ import { createSwimLane } from './views/swim-lane.js'
 import { createTaskBoard } from './views/task-board.js'
 import { createAgentHub } from './views/agent-hub.js'
 import { createCalendar } from './views/calendar.js'
-import type { TrackerState } from './types.js'
-import fs from 'fs'
+import chokidar from 'chokidar'
 import { getTrackerPath } from './config.js'
 
 let activeTab = 0
@@ -20,7 +19,7 @@ let currentView: Widgets.BoxElement | null = null
 
 const screen = blessed.screen({
   smartCSR: true,
-  title: 'Basaar Command Center',
+  title: 'Command Center',
   fullUnicode: true,
 })
 
@@ -107,7 +106,7 @@ const store = new Store()
 
 try {
   const trackerPath = getTrackerPath()
-  fs.watchFile(trackerPath, { interval: 1000 }, () => {
+  chokidar.watch(trackerPath, { ignoreInitial: true }).on('change', () => {
     if (store.loadFromDisk()) {
       renderAll()
     }

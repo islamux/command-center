@@ -2,7 +2,7 @@ import {
   readTracker, writeTracker, findTask, touchAgent, pushLog,
   autoUnblockDependents, countRevisions, ok, fail,
 } from './tracker.service.js'
-import type { ServiceResult } from 'command-center-shared'
+import type { ServiceResult, Subtask } from 'command-center-shared'
 
 export function startTask(taskId: string, agentId = 'orchestrator'): ServiceResult {
   const state = readTracker()
@@ -71,7 +71,7 @@ export function approveTask(taskId: string, feedback?: string): ServiceResult {
   subtask.completed_at = now
   subtask.completed_by = agentId
 
-  const allDone = milestone.subtasks.every((t: import('../types.js').Subtask) => t.status === 'done')
+  const allDone = milestone.subtasks.every((t: Subtask) => t.status === 'done')
   if (allDone && !milestone.actual_end) {
     milestone.actual_end = now.split('T')[0]
   }

@@ -1,6 +1,6 @@
 import {
-  readTracker, writeTracker, findTask, getMilestoneById,
-  getActiveMilestoneById, touchAgent, pushLog, pushHistory,
+  readTracker, writeTracker, getMilestoneById,
+  touchAgent, pushLog, pushHistory,
   generateTaskId, ok, fail,
 } from './tracker.service.js'
 import type { Subtask, Milestone } from 'command-center-shared'
@@ -146,7 +146,7 @@ export function addMilestoneTask(milestoneId: string, label: string, options: Re
     blocked_reason: null,
     completed_at: null,
     completed_by: null,
-    priority: options.priority || 'medium',
+    priority: options.priority || 'P2',
     notes: null,
     prompt: null,
     context_files: [],

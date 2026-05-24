@@ -5,7 +5,6 @@ import type { AgentLogEntry } from 'command-center-shared'
 
 const ARCHIVE_DIR = path.join(PROJECT_ROOT, '.cc-backups', 'agent-log-archive')
 const MAX_IN_MEMORY = 500
-const ARCHIVE_CHUNK_SIZE = 100
 
 function ensureArchiveDir(): void {
   if (!fs.existsSync(ARCHIVE_DIR)) {

@@ -59,7 +59,6 @@ export function statusIcon(status: string): string {
 
 export function priorityBadge(priority: string): string {
   switch (priority) {
-    case 'P0': return '{red-fg}[P0]{/}'
     case 'P1': return '{red-fg}[P1]{/}'
     case 'P2': return '{yellow-fg}[P2]{/}'
     case 'P3': return '{cyan-fg}[P3]{/}'
