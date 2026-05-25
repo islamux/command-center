@@ -1,8 +1,9 @@
 import blessed from 'blessed'
 import type { Widgets } from 'blessed'
 import type { TrackerState } from '../types.js'
+import type { Store } from '../store.js'
 
-export function createStatusBar(screen: Widgets.Screen, state: TrackerState | null): Widgets.BoxElement {
+export function createStatusBar(screen: Widgets.Screen, state: TrackerState | null, store?: Store): Widgets.BoxElement {
   const bar = blessed.box({
     parent: screen,
     bottom: 0,
@@ -20,13 +21,21 @@ export function createStatusBar(screen: Widgets.Screen, state: TrackerState | nu
     }
     const p = s.project
     const week = p.current_week
-    const status = p.schedule_status === 'on_track' ? '{green-fg}ON TRACK{/}' : p.schedule_status === 'behind' ? '{red-fg}BEHIND{/}' : '{cyan-fg}AHEAD{/}'
+    const status =
+      p.schedule_status === 'on_track'
+        ? '{green-fg}ON TRACK{/}'
+        : p.schedule_status === 'behind'
+          ? '{red-fg}BEHIND{/}'
+          : '{cyan-fg}AHEAD{/}'
     const progress = `${p.overall_progress}%`
     const active = s.milestones.active.length
     const backlog = s.milestones.backlog.length
     const completed = s.milestones.completed.length
     const focus = s.dashboard?.current_focus || ''
-    bar.setContent(` Week ${week} │ ${status} │ ${progress} │ Active:${active} Backlog:${backlog} Done:${completed} │ ${focus} │ {muted}r:refresh t:theme q:quit{/}`)
+    const modified = store?.modified ? ' {yellow-fg}[MODIFIED]{/}' : ''
+    bar.setContent(
+      ` Week ${week} │ ${status} │ ${progress} │ Active:${active} Backlog:${backlog} Done:${completed} │ ${focus}${modified} │ {muted}r:refresh t:theme q:quit{/}`,
+    )
   }
 
   render(state)
