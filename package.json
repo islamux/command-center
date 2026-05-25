@@ -28,15 +28,21 @@
     "cc:register-agent": "pnpm _cc register_agent",
     "cc:activate": "pnpm _cc activate_milestone",
     "cc:complete-milestone": "pnpm _cc complete_milestone",
+    "cc:init": "node -e \"const f=require('fs');const s='project-tracker.example.json';const d='project-tracker.json';if(f.existsSync(d)){console.log('project-tracker.json already exists — not overwriting.');process.exit(1)}f.copyFileSync(s,d);console.log('Created '+d+' from '+s+'. Edit it to match your project.')\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint packages/ --ext .ts",
     "format": "prettier --write packages/"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^4.1.7",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.8.3",
-    "typescript-eslint": "^8.59.4"
+    "typescript-eslint": "^8.59.4",
+    "vitest": "^4.1.7"
   }
 }

@@ -3,7 +3,16 @@ import { createBackup } from '../storage/backup.js'
 import { TrackerStateSchema, allMilestones } from 'command-center-shared'
 import { runMigrations } from './migration.service.js'
 import { rotateAgentLog } from '../storage/log-rotation.js'
-import type { TrackerState, Subtask, Milestone, Agent, AgentLogEntry, HistoryLogEntry, FoundTask, ServiceResult } from 'command-center-shared'
+import type {
+  TrackerState,
+  Subtask,
+  Milestone,
+  Agent,
+  AgentLogEntry,
+  HistoryLogEntry,
+  FoundTask,
+  ServiceResult,
+} from 'command-center-shared'
 
 export function readTracker(): TrackerState {
   const raw = readRaw()
@@ -38,20 +47,26 @@ export function computeScheduleStatus(state: TrackerState): 'on_track' | 'behind
 export function computeOverallProgress(state: TrackerState): number {
   const allTasks = allMilestones(state).flatMap((m: Milestone) => m.subtasks)
   if (allTasks.length === 0) return 0
-  const done = allTasks.filter((t: Subtask) => t.status === "done").length
+  const done = allTasks.filter((t: Subtask) => t.status === 'done').length
   return Math.round((done / allTasks.length) * 100)
 }
 
 export function findTask(state: TrackerState, taskId: string): FoundTask | null {
-  for (const milestone of allMilestones(state)) {
-    const subtask = milestone.subtasks.find((s: Subtask) => s.id === taskId)
-    if (subtask) return { subtask, milestone }
+  for (const list of [state.milestones.active, state.milestones.backlog]) {
+    for (const milestone of list) {
+      const subtask = milestone.subtasks.find((s: Subtask) => s.id === taskId)
+      if (subtask) return { subtask, milestone }
+    }
   }
   return null
 }
 
 export function getMilestoneById(state: TrackerState, milestoneId: string): Milestone | undefined {
-  return allMilestones(state).find((m: Milestone) => m.id === milestoneId)
+  for (const list of [state.milestones.active, state.milestones.backlog]) {
+    const m = list.find((ms: Milestone) => ms.id === milestoneId)
+    if (m) return m
+  }
+  return undefined
 }
 
 export function getActiveMilestoneById(state: TrackerState, milestoneId: string): Milestone | undefined {
@@ -85,14 +100,15 @@ export function pushHistory(state: TrackerState, entry: Omit<HistoryLogEntry, 'd
   })
 }
 
-export function autoUnblockDependents(state: TrackerState, completedTaskId: string, _completedMilestoneId?: string): string[] {
+export function autoUnblockDependents(
+  state: TrackerState,
+  completedTaskId: string,
+  _completedMilestoneId?: string,
+): string[] {
   const unblocked: string[] = []
   for (const milestone of allMilestones(state)) {
     for (const subtask of milestone.subtasks) {
-      if (
-        subtask.status === 'blocked' &&
-        subtask.blocked_by === completedTaskId
-      ) {
+      if (subtask.status === 'blocked' && subtask.blocked_by === completedTaskId) {
         const allDepsMet = subtask.depends_on.every((depId: string) => {
           const dep = findTask(state, depId)
           return dep && dep.subtask.status === 'done'
@@ -111,9 +127,7 @@ export function autoUnblockDependents(state: TrackerState, completedTaskId: stri
 
 export function countRevisions(state: TrackerState, taskId: string): number {
   if (!state.agent_log) return 0
-  return state.agent_log.filter(
-    (l: AgentLogEntry) => l.target_id === taskId && l.action === 'reject_task'
-  ).length
+  return state.agent_log.filter((l: AgentLogEntry) => l.target_id === taskId && l.action === 'reject_task').length
 }
 
 export function generateTaskId(milestone: Milestone): string {

@@ -1,21 +1,29 @@
 import { readTracker, findTask, getMilestoneById } from './services/tracker.service.js'
 import { allMilestones } from 'command-center-shared'
 import {
-  startTask, completeTask, approveTask, rejectTask,
-  resetTask, blockTask, unblockTask, updateTask,
-  logAction, enrichTask,
+  startTask,
+  completeTask,
+  approveTask,
+  rejectTask,
+  resetTask,
+  blockTask,
+  unblockTask,
+  updateTask,
+  logAction,
+  enrichTask,
 } from './services/task.service.js'
 import {
-  addMilestoneNote, setMilestoneDates, updateDrift,
-  createMilestone, addMilestoneTask, activateMilestone,
+  addMilestoneNote,
+  setMilestoneDates,
+  updateDrift,
+  createMilestone,
+  addMilestoneTask,
+  activateMilestone,
   moveMilestoneToCompleted,
 } from './services/milestone.service.js'
 import { registerAgent } from './services/agent.service.js'
 import type { AgentLogEntry, Milestone, Subtask } from './types.js'
-import {
-  buildTaskContext, buildTaskSummary, buildProjectStatus,
-  buildMilestoneOverview,
-} from './context.js'
+import { buildTaskContext, buildTaskSummary, buildProjectStatus, buildMilestoneOverview } from './context.js'
 import { z } from 'zod'
 
 type ToolResult = { content: Array<{ type: string; text: string }>; isError?: boolean }
@@ -28,31 +36,75 @@ function err(text: string): ToolResult {
   return { content: [{ type: 'text', text }], isError: true }
 }
 
+const AVAILABLE_TOOL_NAMES = [
+  'get_task_context',
+  'get_task_summary',
+  'get_project_status',
+  'get_milestone_overview',
+  'list_tasks',
+  'get_task_history',
+  'list_agents',
+  'get_activity_feed',
+  'start_task',
+  'complete_task',
+  'approve_task',
+  'reject_task',
+  'reset_task',
+  'block_task',
+  'unblock_task',
+  'update_task',
+  'log_action',
+  'enrich_task',
+  'add_milestone_note',
+  'set_milestone_dates',
+  'update_drift',
+  'activate_milestone',
+  'complete_milestone',
+  'create_milestone',
+  'add_milestone_task',
+  'register_agent',
+]
+
 function serviceToTool(result: { ok: boolean; data?: string; error?: string }): ToolResult {
   return result.ok ? ok(result.data!) : err(result.error!)
 }
 
 // Validate args against inputSchema using Zod
-function validateArgs(args: Record<string, any>, inputSchema: any): { success: boolean; data?: Record<string, any>; error?: string } {
+function validateArgs(
+  args: Record<string, any>,
+  inputSchema: any,
+): { success: boolean; data?: Record<string, any>; error?: string } {
   try {
     const schema = z.object(
       Object.fromEntries(
         Object.entries(inputSchema.properties || {}).map(([key, val]: [string, any]) => {
           let zodType: any
           switch (val.type) {
-            case 'string': zodType = z.string(); break
-            case 'number': zodType = z.number(); break
-            case 'boolean': zodType = z.boolean(); break
-            case 'array': zodType = z.array(z.any()); break
-            default: zodType = z.any()
+            case 'string':
+              zodType = z.string()
+              break
+            case 'number':
+              zodType = z.number()
+              break
+            case 'boolean':
+              zodType = z.boolean()
+              break
+            case 'array':
+              zodType = z.array(z.any())
+              break
+            default:
+              zodType = z.any()
           }
           return [key, inputSchema.required?.includes(key) ? zodType : zodType.optional()]
-        })
-      )
+        }),
+      ),
     )
     const result = schema.safeParse(args)
     if (!result.success) {
-      return { success: false, error: `Invalid args: ${result.error.issues.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(', ')}` }
+      return {
+        success: false,
+        error: `Invalid args: ${result.error.issues.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(', ')}`,
+      }
     }
     return { success: true, data: result.data }
   } catch (e: any) {
@@ -63,8 +115,10 @@ function validateArgs(args: Record<string, any>, inputSchema: any): { success: b
 export async function handleTool(name: string, args: Record<string, any>): Promise<ToolResult> {
   try {
     const defs = getToolDefinitions()
-    const def = defs.find(d => d.name === name)
-    if (!def) return err(`Unknown tool: ${name}`)
+    const def = defs.find((d) => d.name === name)
+    if (!def) {
+      return err(`Unknown tool: '${name}'. Available tools: ${AVAILABLE_TOOL_NAMES.join(', ')}`)
+    }
 
     // Validate args against inputSchema using Zod
     if (def.inputSchema) {
@@ -80,13 +134,13 @@ export async function handleTool(name: string, args: Record<string, any>): Promi
       case 'get_task_context': {
         const state = readTracker()
         const found = findTask(state, args.task_id)
-        if (!found) return err(`Task not found: ${args.task_id}`)
+        if (!found) return err(`Task '${args.task_id}' not found. Use list_tasks to see available tasks.`)
         return ok(buildTaskContext(state, found.subtask, found.milestone))
       }
       case 'get_task_summary': {
         const state = readTracker()
         const found = findTask(state, args.task_id)
-        if (!found) return err(`Task not found: ${args.task_id}`)
+        if (!found) return err(`Task '${args.task_id}' not found. Use list_tasks to see available tasks.`)
         return ok(buildTaskSummary(state, found.subtask, found.milestone))
       }
       case 'get_project_status':
@@ -94,7 +148,8 @@ export async function handleTool(name: string, args: Record<string, any>): Promi
       case 'get_milestone_overview': {
         const state = readTracker()
         const milestone = getMilestoneById(state, args.milestone_id)
-        if (!milestone) return err(`Milestone not found: ${args.milestone_id}`)
+        if (!milestone)
+          return err(`Milestone '${args.milestone_id}' not found. Use get_project_status to see available milestones.`)
         return ok(buildMilestoneOverview(milestone, state))
       }
       case 'list_tasks':
@@ -175,10 +230,10 @@ export async function handleTool(name: string, args: Record<string, any>): Promi
         return serviceToTool(registerAgent(args.agent_id, args.name, args.type, args.permissions, args))
 
       default:
-        return err(`Unknown tool: ${name}`)
+        return err(`Unknown tool: '${name}'. Available tools: ${AVAILABLE_TOOL_NAMES.join(', ')}`)
     }
   } catch (e: any) {
-    return err(`Error: ${e.message}`)
+    return err(`Error in tool '${name}': ${e.message}`)
   }
 }
 
@@ -203,7 +258,16 @@ function toolListTasks(args: Record<string, any>): ToolResult {
     lines.push(`## ${m.title} (${m.id})`)
     lines.push('')
     for (const t of tasks) {
-      const icon = t.status === 'done' ? '[x]' : t.status === 'in_progress' ? '[~]' : t.status === 'review' ? '[r]' : t.status === 'blocked' ? '[!]' : '[ ]'
+      const icon =
+        t.status === 'done'
+          ? '[x]'
+          : t.status === 'in_progress'
+            ? '[~]'
+            : t.status === 'review'
+              ? '[r]'
+              : t.status === 'blocked'
+                ? '[!]'
+                : '[ ]'
       const assignee = t.assignee ? ` → ${t.assignee}` : ''
       lines.push(`- ${icon} \`${t.id}\` ${t.label}${assignee}`)
     }
@@ -216,7 +280,9 @@ function toolListTasks(args: Record<string, any>): ToolResult {
 
 function toolGetActivityFeed(args: Record<string, any>): ToolResult {
   const state = readTracker()
-  let entries = [...(state.agent_log || [])].sort((a: AgentLogEntry, b: AgentLogEntry) => b.timestamp.localeCompare(a.timestamp))
+  let entries = [...(state.agent_log || [])].sort((a: AgentLogEntry, b: AgentLogEntry) =>
+    b.timestamp.localeCompare(a.timestamp),
+  )
   if (args.agent_id) {
     entries = entries.filter((e: AgentLogEntry) => e.agent_id === args.agent_id)
   }
@@ -246,7 +312,8 @@ export function getToolDefinitions() {
   return [
     {
       name: 'get_task_context',
-      description: 'Get full context (~8K tokens) for a task including metadata, acceptance criteria, constraints, context files, revision history, and dependencies',
+      description:
+        'Get full context (~8K tokens) for a task including metadata, acceptance criteria, constraints, context files, revision history, and dependencies',
       inputSchema: {
         type: 'object' as const,
         properties: { task_id: { type: 'string', description: 'Task ID' } },
@@ -255,7 +322,8 @@ export function getToolDefinitions() {
     },
     {
       name: 'get_task_summary',
-      description: 'Get a slim summary (~500 tokens) of a task with key metadata, acceptance criteria, constraints, and context files',
+      description:
+        'Get a slim summary (~500 tokens) of a task with key metadata, acceptance criteria, constraints, and context files',
       inputSchema: {
         type: 'object' as const,
         properties: { task_id: { type: 'string', description: 'Task ID' } },
@@ -429,17 +497,26 @@ export function getToolDefinitions() {
     },
     {
       name: 'enrich_task',
-      description: 'Enrich a task with prompt, builder_prompt, acceptance_criteria, constraints, context_files, or reference_docs. Arrays are replaced, not merged.',
+      description:
+        'Enrich a task with prompt, builder_prompt, acceptance_criteria, constraints, context_files, or reference_docs. Arrays are replaced, not merged.',
       inputSchema: {
         type: 'object' as const,
         properties: {
           task_id: { type: 'string', description: 'Task ID' },
           prompt: { type: 'string', description: 'Task prompt' },
           builder_prompt: { type: 'string', description: 'Builder prompt' },
-          acceptance_criteria: { type: 'array', items: { type: 'string' }, description: 'Acceptance criteria (replaces existing)' },
+          acceptance_criteria: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Acceptance criteria (replaces existing)',
+          },
           constraints: { type: 'array', items: { type: 'string' }, description: 'Constraints (replaces existing)' },
           context_files: { type: 'array', items: { type: 'string' }, description: 'Context files (replaces existing)' },
-          reference_docs: { type: 'array', items: { type: 'string' }, description: 'Reference docs (replaces existing)' },
+          reference_docs: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Reference docs (replaces existing)',
+          },
         },
         required: ['task_id'],
       },
@@ -527,7 +604,8 @@ export function getToolDefinitions() {
     },
     {
       name: 'complete_milestone',
-      description: 'Move an active milestone to completed, removing it from the active list and adding it to completed milestones',
+      description:
+        'Move an active milestone to completed, removing it from the active list and adding it to completed milestones',
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -554,4 +632,3 @@ export function getToolDefinitions() {
     },
   ]
 }
-

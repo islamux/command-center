@@ -20,7 +20,8 @@ project-root/
 ├── docs/
 │   ├── ai-rules.md               ← Universal AI protocols (5 phases)
 │   ├── cc-commands.md            ← Full CLI reference
-│   └── command-center-blueprint.md  ← Original design spec
+│   └── archive/
+│       └── command-center-blueprint.md  ← Original design spec (archived)
 ├── scripts/
 │   └── cc-dash.py                ← Python terminal dashboard (rich)
 └── packages/
@@ -30,6 +31,7 @@ project-root/
 ```
 
 The Command Center discovers `project-tracker.json` by:
+
 1. Checking `PROJECT_ROOT` env var, or
 2. Walking up from `cwd` until it finds `project-tracker.json`
 
@@ -41,33 +43,35 @@ All commands must be run from the project root. **Build first:** `pnpm install &
 
 See [docs/cc-commands.md](docs/cc-commands.md) for full reference.
 
-| Command | Description |
-|---------|-------------|
-| `pnpm ccui` | Launch TUI dashboard |
-| `pnpm cc:status` | Project status overview |
-| `pnpm cc:list` | List and filter tasks |
-| `pnpm cc:agents` | List registered agents |
-| `pnpm cc:task <id>` | Full task context |
-| `pnpm cc:mstone <id>` | Milestone overview |
-| `pnpm cc:start <id>` | Start a task |
-| `pnpm cc:complete <id>` | Mark task ready for review |
-| `pnpm cc:approve <id>` | Approve and mark done |
-| `pnpm cc:reject <id>` | Reject, send back |
-| `pnpm cc:reset <id>` | Reset task to todo |
-| `pnpm cc:block <id>` | Block a task |
-| `pnpm cc:unblock <id>` | Unblock a task |
-| `pnpm cc:activity` | View activity feed |
-| `pnpm cc:activate <id>` | Move milestone to active |
-| `pnpm cc:complete-milestone <id>` | Move milestone to completed |
-| `pnpm cc:register-agent <id>` | Register or update agent |
-| `pnpm cc:mcp` | Start MCP server (stdio) |
-| `pnpm build` | Build all packages |
+| Command                           | Description                                       |
+| --------------------------------- | ------------------------------------------------- |
+| `pnpm ccui`                       | Launch TUI dashboard                              |
+| `pnpm cc:status`                  | Project status overview                           |
+| `pnpm cc:list`                    | List and filter tasks                             |
+| `pnpm cc:agents`                  | List registered agents                            |
+| `pnpm cc:task <id>`               | Full task context                                 |
+| `pnpm cc:mstone <id>`             | Milestone overview                                |
+| `pnpm cc:start <id>`              | Start a task                                      |
+| `pnpm cc:complete <id>`           | Mark task ready for review                        |
+| `pnpm cc:approve <id>`            | Approve and mark done                             |
+| `pnpm cc:reject <id>`             | Reject, send back                                 |
+| `pnpm cc:reset <id>`              | Reset task to todo                                |
+| `pnpm cc:block <id>`              | Block a task                                      |
+| `pnpm cc:unblock <id>`            | Unblock a task                                    |
+| `pnpm cc:activity`                | View activity feed                                |
+| `pnpm cc:activate <id>`           | Move milestone to active                          |
+| `pnpm cc:complete-milestone <id>` | Move milestone to completed                       |
+| `pnpm cc:register-agent <id>`     | Register or update agent                          |
+| `pnpm cc:mcp`                     | Start MCP server (stdio)                          |
+| `pnpm cc:init`                    | Create project-tracker.json from example template |
+| `pnpm build`                      | Build all packages                                |
 
 ---
 
 ## Registered Agent Personas
 
 ### 1. Orchestrator (`orchestrator`)
+
 - **Domain:** Project Management & Architecture.
 - **Responsibilities:**
   - Maintains `project-tracker.json` — creates tasks, assigns priorities, logs history.
@@ -76,6 +80,7 @@ See [docs/cc-commands.md](docs/cc-commands.md) for full reference.
 - **Completion Marker:** `log_action(task_id, "orchestration_complete", summary, agent_id: "orchestrator")`
 
 ### 2. Explorer (`explorer`)
+
 - **Domain:** Codebase Navigation & Analysis.
 - **Responsibilities:**
   - Maps directory structures, finds code dependencies, and identifies integration points.
@@ -84,6 +89,7 @@ See [docs/cc-commands.md](docs/cc-commands.md) for full reference.
 - **Completion Marker:** `log_action(task_id, "exploration_complete", summary, agent_id: "explorer")`
 
 ### 3. Researcher (`researcher`)
+
 - **Domain:** R&D and Prototyping.
 - **Responsibilities:**
   - Tests libraries, frameworks, and architectural patterns in isolation.
@@ -92,6 +98,7 @@ See [docs/cc-commands.md](docs/cc-commands.md) for full reference.
 - **Completion Marker:** `log_action(task_id, "research_complete", summary, agent_id: "researcher")`
 
 ### 4. UI/Frontend Specialist (`frontend-specialist`)
+
 - **Domain:** User Interface & Frontend Logic.
 - **Responsibilities:**
   - Builds responsive UI components following project conventions.
@@ -99,6 +106,7 @@ See [docs/cc-commands.md](docs/cc-commands.md) for full reference.
   - Ensures accessibility and performance.
 
 ### 5. Post-Build Auditor (`post-build-auditor`)
+
 - **Domain:** QA & Performance.
 - **Responsibilities:**
   - Verifies build success, audits bundle sizes, linting, and accessibility.

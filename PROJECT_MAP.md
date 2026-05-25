@@ -4,16 +4,16 @@
 
 ## [TECH_STACK]
 
-| Layer | Technology |
-|:------|:-----------|
-| Runtime | Node.js 20+ |
-| Language | TypeScript 5.7 (strict, ES modules) |
-| Package Manager | pnpm 9+ (workspace monorepo) |
-| MCP Server | @modelcontextprotocol/sdk |
-| TUI | blessed |
-| File Watcher | chokidar + fs.watch |
-| Validation | zod v4 |
-| CLI | Node.js (stdio) |
+| Layer           | Technology                          |
+| :-------------- | :---------------------------------- |
+| Runtime         | Node.js 20+                         |
+| Language        | TypeScript 5.7 (strict, ES modules) |
+| Package Manager | pnpm 9+ (workspace monorepo)        |
+| MCP Server      | @modelcontextprotocol/sdk           |
+| TUI             | blessed                             |
+| File Watcher    | chokidar + fs.watch                 |
+| Validation      | zod v4                              |
+| CLI             | Node.js (stdio)                     |
 
 ## [ARCHITECTURE]
 
@@ -71,9 +71,9 @@ packages/tui/        → Terminal UI dashboard
 
 ## [ORPHANS & PENDING]
 
-- No automated tests yet
-- No linting/formatting configured (eslint, prettier)
-- TUI is read-only (can't modify tasks from keyboard yet)
-- MCP server error handling could be more granular
-- No CI/CD pipeline
-- docs/command-center-blueprint.md is the original design spec (differs from actual implementation)
+- ✅ 148 unit/integration tests with vitest + GitHub Actions CI
+- ✅ ESLint + Prettier configured for linting and formatting
+- ✅ TUI is fully interactive with keyboard task controls (Space/s/b/a/e keys)
+- ⚠️ MCP server error messages could be more granular (task-specific suggestions, available tools listing)
+- ✅ GitHub Actions CI pipeline configured (install, build, lint, test)
+- ✅ docs/command-center-blueprint.md archived to docs/archive/
